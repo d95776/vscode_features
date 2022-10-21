@@ -1,0 +1,59 @@
+
+plugins {
+	id 'org.springframework.boot' version '2.6.3'
+	id 'io.spring.dependency-management' version '1.0.11.RELEASE'
+	id 'java'
+	id 'eclipse'
+}
+
+group = 'com.example'
+version = '0.0.1-SNAPSHOT'
+sourceCompatibility = '1.8'
+
+ext {
+    mapstructVersion = "1.5.3.Final"
+}
+
+repositories {
+	mavenCentral()
+	flatDir{
+		dirs 'ext-lib'
+	}
+}
+
+compileJava {
+	options.generatedSourceOutputDirectory = file("${projectDir}/src/generated/java")
+}
+
+// Referenced docs
+// https://github.com/eugenp/tutorials/blob/master/mapstruct/src/test/java/com/baeldung/mapstruct/mappingCollections/mapper/CompanyMapperAdderPreferredUnitTest.java
+// https://docs.gradle.org/current/dsl/org.gradle.api.tasks.compile.CompileOptions.html#org.gradle.api.tasks.compile.CompileOptions:generatedSourceOutputDirectory
+// https://docs.gradle.org/current/dsl/org.gradle.api.tasks.SourceSet.html#org.gradle.api.tasks.SourceSet:java
+// https://docs.gradle.org/current/userguide/building_java_projects.html#sec:java_source_sets
+// https://lightrun.com/answers/redhat-developer-vscode-java-classes-compile-outside-vscode-in-cli-but-in-vs-code-problem-section-displays-errors-and-editor-hig
+// https://mapstruct.org/documentation/installation/
+
+sourceSets {
+		main {
+        java {
+            srcDirs = ['src/main/java', 'src/generated/java']
+        }
+    }
+}
+
+dependencies {
+	implementation 'org.springframework.boot:spring-boot-starter-web'
+	testImplementation('org.springframework.boot:spring-boot-starter-test')
+
+	implementation(':app')
+
+	implementation "org.mapstruct:mapstruct:${mapstructVersion}"
+	annotationProcessor "org.mapstruct:mapstruct-processor:${mapstructVersion}"
+
+	// If you are using mapstruct in test code
+	testAnnotationProcessor "org.mapstruct:mapstruct-processor:${mapstructVersion}"
+}
+ 
+test {
+	useJUnitPlatform()
+}
